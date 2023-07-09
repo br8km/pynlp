@@ -1,0 +1,15 @@
+
+# Python Cache Files
+__pycache__
+
+# Backup Files
+bak/
+
+# Data Files
+dat/
+
+# Reference Files
+ref/
+
+# Out Files
+out/
