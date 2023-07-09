@@ -709,15 +709,3 @@ class HyponymDetector:
 
         return doc
 
-
-class TestHyponym:
-    """Test Hyponym Detector."""
-
-    def example(self) -> None:
-        """Example."""
-        nlp = spacy.load("en_core_web_sm")
-        nlp.add_pipe("hyponym_detector", last=True, config={"extended": False})
-
-        doc = nlp("Keystone plant species such as fig trees are good for the soil.")
-
-        print(doc._.hearst_patterns)

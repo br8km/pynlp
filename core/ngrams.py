@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Text n-grams Generator."""
+"""Text n-grams Generator.
+
+    20230709--TODO: Need Rewrite decorator for CLS, NOT Method.
+
+"""
 
 # Reference: https://github.com/kpwhri/spacy-ngram#usage
 
 from __future__ import annotations
 from collections import deque, defaultdict
 
-import spacy
 from spacy.language import Language
 from spacy.tokens import Doc, Span
 
@@ -126,37 +129,3 @@ class NgramComponent:
             self.add_document_ngrams(doc)
         return doc
 
-
-class TestNGrams:
-    """Test n-grams."""
-
-    def example_one(self) -> None:
-        """Example One."""
-        nlp = spacy.load('en_core_web_sm')  # or whatever model you downloaded
-        nlp.add_pipe('spacy-ngram')  # default to document-level ngrams, removing stopwords
-
-        text = 'Quark soup is an interacting localized assembly of quarks and gluons.'
-        doc = nlp(text)
-
-        print(doc._.ngram_1)
-        # ['quark', 'soup', 'interact', 'localize', 'assembly', 'quark', 'gluon']
-
-        print(doc._.ngram_2)
-        # ['quark_soup', 'soup_interact', 'interact_localize', 'localize_assembly', 'assembly_quark', 'quark_gluon']
-
-    def example_two(self) -> None:
-        """Example Two."""
-        nlp = spacy.load('en_core_web_sm')  # or whatever model you downloaded
-        nlp.add_pipe('spacy-ngram', config={
-            'sentence_level': True,  # initialize sentence-level ngrams
-            'doc_level': False,  # skip processing at document-level
-            'ngrams': (2, 3),  # bi- and trigram only
-        })
-        text = 'Quark soup is an interacting localized assembly of quarks and gluons.'
-        doc = nlp(text)
-        sentence = list(doc.sents)
-
-        print(sentence._.ngram_1)
-        # raises AttributeError
-        print(sentence._.ngram_2)  # returns list of bigrams
-        print(sentence._.ngram_3)  # returns list of trigrams

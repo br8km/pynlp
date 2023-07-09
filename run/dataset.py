@@ -11,7 +11,7 @@ from pathlib import Path
 import pandas as pd
 from pandas import DataFrame
 
-from ..inc.io import IO
+from ..base.io import IO
 
 
 

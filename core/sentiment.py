@@ -16,7 +16,6 @@
 from dataclasses import dataclass
 
 import spacy
-from spacy.language import Language
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -79,20 +78,9 @@ class AspectSentiment:
 class SentimentAnalysis:
     """Sentiment Analysis."""
 
-    nlp: Language
-
-    def __init__(self,
-                 use_aspect: bool = False,
-                 model_name: str = "en_core_web_md") -> None:
-        """Init Sentiment Analysis."""
-        self.use_aspect = use_aspect
-        self.model_name = model_name
-        if self.use_aspect and self.model_name:
-            self.nlp = spacy.load(model_name)
-
-    def get_sentiment(self, document: str) -> Sentiment:
+    def get(self, sentence: str) -> Sentiment:
         """Get Sentiment for document string."""
-        blob = TextBlob(document)
+        blob = TextBlob(sentence)
         # default sentiment type not assessible, use custom one here.
         return Sentiment(
             polarity=blob.polarity,
@@ -108,19 +96,16 @@ class SentimentAnalysis:
 
     def _get_aspect_sentiments(self, sentences: list[str]) -> list[AspectSentiment]:
         """Get Aspect Sentiment for list of sentence string."""
-        # aspects = list(set(w.lower() for w in aspects))
 
-        # results: list[AspectSentiment] = [
-        #     AspectSentiment(name=w, polarity=0.0, subjectivity=0.0)
-        #     for w in aspects
-        # ]
+        model_name: str = "en_core_web_md"
+        nlp = spacy.load(model_name)
 
         results: list[AspectSentiment] = []
 
         data: list[dict] = []
 
         for sentence in sentences:
-            doc = self.nlp(sentence)
+            doc = nlp(sentence)
             descriptive_term = ""
             target = ''
             for token in doc:
@@ -167,7 +152,7 @@ class AspectBasedSentimentAnalysis:
         softmax = nn.Softmax(dim=1)
         outputs = softmax(outputs.logits)
         results = [round(i,4) for i in outputs.tolist()[0]]
-        # print(result)
+
         data = dict(zip(keys, results))
         return AspectSentiment(
             aspect=aspect,

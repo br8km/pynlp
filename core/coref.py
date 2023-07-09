@@ -4,8 +4,8 @@
 """Text Coreference Resolution."""
 
 # https://github.com/explosion/spacy-experimental
-#   - https://github.com/explosion/spaCy/discussions/11585
-# [BAD] https://github.com/huggingface/neuralcoref  -- Version.Conflict!
+#  - https://github.com/explosion/spaCy/discussions/11585
+#  - https://github.com/huggingface/neuralcoref  -- Version.Conflict!
 
 # Maybe Must Train Yourself Coref Model
 # - https://explosion.ai/blog/coref

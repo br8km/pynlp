@@ -3,13 +3,13 @@
 __pycache__
 
 # Backup Files
-bak/
+_bak/
 
 # Data Files
 dat/
 
 # Reference Files
-ref/
+_ref/
 
 # Out Files
 out/
