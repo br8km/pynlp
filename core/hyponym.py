@@ -8,7 +8,6 @@
 
 from typing import List, Dict, Any
 
-import spacy
 from spacy.matcher import Matcher
 from spacy.tokens import Token, Doc
 from spacy.language import Language
