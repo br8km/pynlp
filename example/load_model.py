@@ -1,18 +1,15 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""NLP Data Debugger for Ideas."""
+"""Load Models with extra source model pipes."""
 
 import spacy
 
 from ..base.common import timeit
-from ..config import Config
 
 
 class Debugger:
     """Debugger."""
-
-    cfg = Config()
 
     @timeit
     def run_test(self) -> None:

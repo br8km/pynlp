@@ -16,7 +16,7 @@ from arrow import Arrow
 __all__ = (
     "smart_delay",
     "utc_offset",
-    "timing",
+    "timeit",
     "Timer",
 )
 
@@ -39,23 +39,24 @@ def utc_offset(time_zone: str) -> int:
     return 0
 
 
-def timing(func: Callable) -> Any:
+def timeit(func: Callable) -> Any:
     """Measure Timing of functions"""
 
     @wraps(func)
-    def wrap(*args: Any, **kwargs: Any) -> Any:
+    def timeit_wrapper(*args: Any, **kwargs: Any) -> Any:
         """Wrap function."""
-        start = time.time()
+        start_time = time.perf_counter()
         result = func(*args, **kwargs)
-        end = time.time()
+        end_time = time.perf_counter()
+        total_time = end_time - start_time
         print(
-            "func:%r args:%r, kwargs:%r took: %2.8f sec"
-            % (func.__name__, args, kwargs, end - start)
+            "Func:%r, args=%r, kwargs=%r took: %2.4f Sec"
+            % (func.__name__, args, kwargs, total_time)
         )
 
         return result
 
-    return wrap
+    return timeit_wrapper
 
 
 class Timer:
@@ -128,7 +129,7 @@ class TestTimer:
         assert offset == 8
 
     @staticmethod
-    @timing
+    @timeit
     def delay(name: str, pause: float) -> float:
         """Delay for pause, return pause."""
         print(f"anme = {name}")

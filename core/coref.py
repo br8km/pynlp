@@ -4,6 +4,7 @@
 """Text Coreference Resolution."""
 
 # https://github.com/explosion/spacy-experimental
+
 #  - https://github.com/explosion/spaCy/discussions/11585
 #  - https://github.com/huggingface/neuralcoref  -- Version.Conflict!
 
@@ -21,6 +22,8 @@
 
 class Coref:
     """Coreference Resolution."""
+
+    # See test_coref.py for usage example.
 
 
     

@@ -7,7 +7,6 @@ from pathlib import Path
 from random import randint
 
 
-
 def random_seed(a: int, b: int) -> int:
     """Random Seed."""
     return randint(a=a, b=b)
