@@ -14,9 +14,12 @@
 # - [bad] https://github.com/ScalaConsultants/Aspect-Based-Sentiment-Analysis
 
 from dataclasses import dataclass
+from typing import Optional
 
 import spacy
+from spacy.language import Language
 from textblob import TextBlob
+from spacytextblob.spacytextblob import SpacyTextBlob
 from textblob.classifiers import NaiveBayesClassifier
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch.nn as nn
@@ -72,11 +75,23 @@ class AspectSentiment:
                 _score = value
         return _mark
 
-        
-
 
 class SentimentAnalysis:
     """Sentiment Analysis."""
+
+    nlp: Optional[Language] = None
+
+    def nlp_get(self, sentence: str) -> Sentiment:
+        """Get Sentiment for sentence string."""
+        if not isinstance(self.nlp, Language):
+            self.nlp = spacy.load("en_core_web_sm")
+            self.nlp.add_pipe("spacytextblob")
+
+        doc = self.nlp(sentence)
+        return Sentiment(
+            polarity=doc._.blob.polarity,
+            seubjectivity=doc._.blob.subjectivity,
+        )
 
     def get(self, sentence: str) -> Sentiment:
         """Get Sentiment for document string."""
