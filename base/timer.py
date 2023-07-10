@@ -50,7 +50,7 @@ def timeit(func: Callable) -> Any:
         end_time = time.perf_counter()
         total_time = end_time - start_time
         print(
-            "Func:%r, args=%r, kwargs=%r took: %2.4f Sec"
+            "\nFunc:%r, args=%r, kwargs=%r took: %2.4f Sec"
             % (func.__name__, args, kwargs, total_time)
         )
 
