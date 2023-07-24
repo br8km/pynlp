@@ -1,31 +1,70 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Intent Patterns."""
+"""Intent Detector."""
 
 from typing import Any
-from dataclasses import dataclass
 
 from spacy.language import Language
 from spacy.matcher import Matcher
 from spacy.tokens import Token, Doc
 
 
-@dataclass
-class Intent:
-    """Intent."""
-    
-    # kind: str  # Knowedge, Information, etc.
-    context: str  # Article, Post, Story, Book, Movie, Song, etc.
-    category: str  # Sports, Celebs, Movie, etc.
-    niche: str  #  sport vechicle, video gaming etc.
+product_name = {"POS": {"IN": ["NOUN", "PROPN", "PRON"]}}
+product_category = {"POS": {"IN": ["NOUN", "PROPN", "PRON"]}}  # tools, apps, websites, sites, solutions, software, etc.
+product_candidate = {"POS": {"IN": ["NOUN", "PROPN", "PRON"]}}
+product_feature = {}
+customer_object = {"POS": {"IN": ["NOUN", "PROPN", "PRON"]}}
+compititer_name = {}
+customer_pain = {}
 
-    lable: str
-    rules: list[dict[str, Any]]
+punct = {"IS_PUNCT": True, "OP": "?"}
+det = {"ORTH": "*", "OP": "*"}
 
 
-@Language.factory("intent_finder")
-class IntentFinder:
+
+# I wish there was
+# 
+
+INTENT_PATTERNS: list[dict[str, Any]] = [
+    {
+        "scope": "customer",
+        "kind": "customer_ideas",
+        "label": "alternative_for",
+        "pattern": [
+            {"LEMMA": "alternative"},
+            {"LEMMA": "for"},
+            product,
+        ],
+    },
+    {
+        "scope": "customer",
+        "kind": "customer_ideas",
+        "label": "any_for",
+        "pattern": [
+            {"LEMMA": "any"},
+            product_category,
+            {"LEMMA": "for"},
+            target,
+        ],
+    },
+    {
+        "scope": "customer",
+        "kind": "customer_ideas",
+        "label": "any_like",
+        "pattern": [
+            {"LEMMA": "any"},
+            product_category,
+            {"LEMMA": "like"},
+            product,
+        ],
+    }
+
+]
+
+
+@Language.factory("intent_detector")
+class IntentDetector:
     """
     A spaCy pipe for intent detect.
     This class sets the following attributes:
@@ -36,53 +75,35 @@ class IntentFinder:
 
     The pipe can be used with an instantiated spacy model like so:
     ```
-    # add the intent_finder
-    nlp.add_pipe('intent_finder', config={'extended': True}, last=True)
-    nlp.add_pipe(")
+    # add the intent_detector
+    nlp.add_pipe('intent_detector')
 
     Parameters
     ----------
 
     nlp: `Language`, a required argument for spacy to use this as a factory
     name: `str`, a required argument for spacy to use this as a factory
-    extended: `bool`, whether to use the extended Hearts patterns or not
+    category: `str`, which category of intent patterns to look for
     """
 
-    def __init__(
-        self, nlp: Language,
-        context: str,
-        category: str,
-        niche: str,
-        name: str = "smart_doctor",
-    ):
+    def __init__(self, 
+                 nlp: Language,
+                 name: str = "intent_detector",
+                 scope: str = "customer"):
         self.nlp = nlp
         self.name = name
-        self.context = context
-        self.category = category
-        self.niche = niche
+        self.scope = scope
 
-        self.patterns = []
-
+        self.patterns = [p for p in INTENT_PATTERNS if p["scope"]==scope]
         self.matcher = Matcher(self.nlp.vocab)
 
-        Doc.set_extension("grammar_patterns", default=[], force=True)
-
-        self.first = set()
-        self.last = set()
+        Doc.set_extension("intent_patterns", default=[], force=True)
 
         # add patterns to matcher
         for pattern in self.patterns:
             self.matcher.add(pattern["label"], [pattern["pattern"]])
 
-            # gather list of predicates where the hypernym appears first
-            if pattern["position"] == "first":
-                self.first.add(pattern["label"])
-
-            # gather list of predicates where the hypernym appears last
-            if pattern["position"] == "last":
-                self.last.add(pattern["label"])
-    
-    def process(self, token: Token) -> None:
+    def process(self, token: Token, doc: Doc) -> None:
         """Process Token example."""
         raise NotImplementedError
 

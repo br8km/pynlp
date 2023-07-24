@@ -24,7 +24,7 @@ class Emotion:
     emoji: str
 
 
-def get_sentiment_emoji(sentiment: str) -> str:
+def get_emotion_emoji(tag: str) -> str:
     # Define the emojis corresponding to each sentiment
     emoji_mapping = {
         "disappointment": "😞",
@@ -56,7 +56,7 @@ def get_sentiment_emoji(sentiment: str) -> str:
         "gratitude": "🙏",
         "pride": "🦁"
     }
-    return emoji_mapping.get(sentiment, "")
+    return emoji_mapping.get(tag, "")
 
 
 class EmotionDetectorT5:
@@ -80,7 +80,7 @@ class EmotionDetectorT5:
                max_length=2)
         dec = [self.tokenizer.decode(ids) for ids in output]
         emo = dec[0].replace("<pad>", "").strip()
-        return Emotion(tag=emo, emoji=get_sentiment_emoji(emo))
+        return Emotion(tag=emo, emoji=get_emotion_emoji(emo))
 
 
 class EmotionDetectorRoberta:
@@ -126,11 +126,20 @@ class EmotionDetectorRoberta:
 
     def get(self, text: str) -> Emotion:
         """Get Emotion from text str."""
-        results = self.nlp(text)
+        try:
+            results = self.nlp(text)
+        except RuntimeError as err:
+            print(f"len(text) = {len(text)}")
+            print(f"text: {text}")
+            raise(err)
+
         data = {result['label']: result['score'] for result in results}
-        emo, score = "", 0
+        tag, score = "", 0
         for key, value in data.items():
             if value > score:
-                emo = key
+                tag = key
                 score = value
-        return Emotion(tag=emo, emoji=get_sentiment_emoji(emo))
+        return Emotion(
+            tag=tag,
+            emoji=get_emotion_emoji(tag=tag),
+        )
