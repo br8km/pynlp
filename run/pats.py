@@ -254,6 +254,10 @@ class SemanticPatternFinder:
         data = {ent.text: ent.label_ for ent in doc.ents}
         print(json.dumps(data, indent=2))
 
+    def to_do(self) -> None:
+        """TO DO."""
+        # product feature extraction
+
 
 if __name__ == "__main__":
     SemanticPatternFinder().run_test()

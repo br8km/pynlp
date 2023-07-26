@@ -34,7 +34,7 @@ INTENT_PATTERNS: list[dict[str, Any]] = [
         "pattern": [
             {"LEMMA": "alternative"},
             {"LEMMA": "for"},
-            product,
+            product_name,
         ],
     },
     {
@@ -45,7 +45,7 @@ INTENT_PATTERNS: list[dict[str, Any]] = [
             {"LEMMA": "any"},
             product_category,
             {"LEMMA": "for"},
-            target,
+            customer_object,
         ],
     },
     {
@@ -56,7 +56,7 @@ INTENT_PATTERNS: list[dict[str, Any]] = [
             {"LEMMA": "any"},
             product_category,
             {"LEMMA": "like"},
-            product,
+            product_name,
         ],
     }
 
