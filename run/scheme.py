@@ -2,7 +2,8 @@
 
 """Market Scheme."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
+from dacite import from_dict
 
 
 @dataclass
